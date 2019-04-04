@@ -29,17 +29,6 @@
 
 	<repositories>
 		<repository>
-			<id>nexus</id>
-			<name>local private nexus</name>
-			<url>http://192.168.10.4:8085/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-		<repository>
 			<id>spring-snapshots</id>
 			<name>Spring Snapshots</name>
 			<url>https://repo.spring.io/snapshot</url>
@@ -244,19 +233,6 @@
 		</dependency>
 	    
 	</dependencies>
-
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>infra realease</name>
-			<url>http://172.16.51.180:8085/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>infra snapshotRepository</name>
-			<url>http://112.94.224.249:8085/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 	<build>
 		<finalName>${artifactId}</finalName>
