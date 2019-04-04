@@ -121,7 +121,7 @@ public class WeChatUtils {
 			try {
 				log.info("获取关注公众号状态失败", json.toString());
 				// 若accessToken 超时，则重新获取
-				String errcode = json.getString("errcode") + ",";
+				String errcode = json.getString("errcode");
 				List<String> codes = Arrays.asList("42001", "40003", "40001");
 				if (codes.contains(errcode)) {
 					log.info("正在重新尝试获取关注公众号状态...");

@@ -16,7 +16,6 @@ import pers.chemyoo.core.annotations.Sid;
 import pers.chemyoo.core.enums.CheckFieldType;
 import pers.chemyoo.core.enums.ExcludeField;
 import pers.chemyoo.core.utils.AttributesUtils;
-import pers.chemyoo.core.utils.DateUtils;
 
 /**
  * @author Author : jianqing.liu
@@ -51,14 +50,6 @@ public class IdModel {
 	}
 
 	/**
-	 * 检查除SID和LastModifiedTime外的字段不能为空 Not null or not empty.
-	 */
-	public void selfCheck(boolean setModifiedTime) {
-		this.setModifiedTime(setModifiedTime);
-		this.selfCheck();
-	}
-
-	/**
 	 * 自查指定检测类型字段值是否为空
 	 * <p>
 	 * Not null or not empty.
@@ -69,25 +60,6 @@ public class IdModel {
 	 */
 	public void selfCheck(CheckFieldType type) {
 		AttributesUtils.checkNotEmpty(getClass(), this, type);
-	}
-
-	/**
-	 * 自查指定检测类型字段值是否为空
-	 * <p>
-	 * Not null or not empty.
-	 * </p>
-	 * 
-	 * @param type
-	 *            {@link CheckFieldType}
-	 */
-	public void selfCheck(CheckFieldType type, boolean setModifiedTime) {
-		this.setModifiedTime(setModifiedTime);
-		this.selfCheck(type);
-	}
-
-	private void setModifiedTime(boolean setModifiedTime) {
-		if (setModifiedTime)
-			this.setLastModTime(DateUtils.getCurrentTime());
 	}
 
 }
