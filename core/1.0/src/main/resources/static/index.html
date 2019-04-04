@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>welcome</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<style type="text/css">
+	a#mine,p,div{
+		font-size: 28px;
+		color: red;
+		font-weight: bold;
+		font-style: italic;
+		text-align: center;
+		margin-top: 150px;
+	}
+	.aaa{
+		color: black !important;
+		text-shadow: 1px 1px graytext;
+	}
+	.bbb{
+		color: blue !important;
+		text-shadow: 1px 1px olive;
+	}
+</style>
+</head>
+<body>
+	<div>
+		<p>
+			核心平台
+			<a href="utils/cache/clear" target="_blank" id="mine"
+				style="text-decoration:none;margin-left: -15px;cursor: text;">
+			<span>.</span>
+		</a>
+		</p>
+<!-- 		<img alt="公众号二维码" src="qrcode/example.jpg"/> -->
+	</div>
+	<script type="text/javascript">
+		var p = document.getElementsByTagName("p");
+		var a = document.getElementById("mine");
+		var clazzName = ["bbb", "aaa"];
+		var n = 0;
+		var t = setInterval(function(){
+			n ++;
+			for(var i = 0; i < p.length; i++){
+				var classList = p[i].classList;
+				var aList = a.classList;
+				if(classList.length == 0){
+					classList.add(clazzName[n%2]);
+					aList.add(clazzName[n%2]);
+				} else {
+					classList.remove(clazzName[n%2]);
+					aList.remove(clazzName[n%2]);
+				}
+			}
+			n > 3 ? (n=0) : "";
+		}, 1500);
+	</script>
+</body>
+</html>
