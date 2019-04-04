@@ -27,13 +27,13 @@ import pers.chemyoo.core.utils.DateUtils;
 @MappedSuperclass
 public class IdModel {
 
-	public static final String ID = "sid";
+	public static final String ID = "id";
 
 	public static final String CREATE_TIME = "lastModifiedTime";
 
 	@Comment("流水号")
 	@Column(name = ID, type = MySqlTypeConstant.VARCHAR, length = 50, isKey = true)
-	private String sid;
+	private String id;
 
 	@JsonIgnore
 	@Comment(value = "最后修改时间", exclude = { ExcludeField.ALWAYS })
