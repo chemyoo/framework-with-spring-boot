@@ -1,0 +1,12 @@
+/build/
+/target/
+/*.properties*
+/*.iml
+/*.txt
+/.fatjar
+*.xml
+.idea/workspace.xml
+*.class
+/.classpath
+/.project
+/.settings
