@@ -22,7 +22,7 @@ public class PersistUtils {
 
 	public static <T extends IdModel> boolean save(TkMapper<T> mapper, T t) {
 		String sid = t.getId();
-		t.setLastModifiedTime(DateUtils.getCurrentTime());
+		t.setLastModTime(DateUtils.getCurrentTime());
 		if (sid == null) {
 			return mapper.insert(t) > 0;
 		} else {
@@ -45,7 +45,7 @@ public class PersistUtils {
 				t.setId(KeyGenerator.getGenerator().getKey());
 				savelist.add(t);
 			}
-			t.setLastModifiedTime(lmt);
+			t.setLastModTime(lmt);
 		}
 		if (!savelist.isEmpty()) {
 			saveCount += mapper.insertList(savelist);
@@ -55,7 +55,7 @@ public class PersistUtils {
 
 	public static <T extends IdModel> Example primaryKeyExample(Class<T> clazz, String primaryKey) {
 		Example example = new Example(clazz);
-		example.createCriteria().andEqualTo(IdModel.ID, primaryKey);
+		example.createCriteria().andEqualTo(IdModel.SID, primaryKey);
 		return example;
 	}
 
