@@ -11,33 +11,34 @@ import com.google.common.collect.Sets;
 
 import lombok.extern.slf4j.Slf4j;
 
-/** 
+/**
  * @author Author : jianqing.liu
- * @version version : created time：2019年3月1日 上午11:24:33 
- * @since since from 2019年3月1日 上午11:24:33 to now.
+ * @version version : created time：2016年3月23日 上午11:24:33
+ * @since since from 2016年3月23日 上午11:24:33 to now.
  * @description class description
  */
 @Slf4j
 public class KeyGenerator {
-	
-	private KeyGenerator() {}
-	
+
+	private KeyGenerator() {
+	}
+
 	/** 小量的键值缓存 */
 	private static Set<String> keyCache = Sets.newHashSet();
 
 	private static final AtomicInteger INDEX = new AtomicInteger(0);
-	
+
 	private static final char A = 'A';
 
 	/** 线程安全的日期格式化类 */
 	public static final FastDateFormat fastFormat = FastDateFormat.getInstance("yyyyMMddHHmmssSSS");
-	
+
 	private static KeyGenerator keyGenerator = new KeyGenerator();
-	
+
 	public static KeyGenerator getGenerator() {
 		return keyGenerator;
 	}
-	
+
 	/**
 	 * 多线程安全产生永不重复的key值
 	 * 
@@ -75,6 +76,6 @@ public class KeyGenerator {
 		if (index >= 25) {
 			INDEX.set(0);
 		}
-		return (char)(index + A);
+		return (char) (index + A);
 	}
 }
