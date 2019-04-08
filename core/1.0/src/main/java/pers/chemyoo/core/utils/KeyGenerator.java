@@ -69,7 +69,7 @@ public class KeyGenerator {
 	}
 
 	/**
-	 * @return a uppercase character
+	 * @return a upper case character
 	 */
 	public synchronized char getUppercaseLetter() {
 		int index = INDEX.getAndIncrement();
