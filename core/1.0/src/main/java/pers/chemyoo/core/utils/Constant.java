@@ -28,4 +28,6 @@ public class Constant {
 	public static final String NOT_A_DATE = "日期格式错误";
 	
 	public static final String DATE_RANGE_ERROR = "只能预约15天内业务";
+
+	public static final String CUSTOM_CODE = "500";
 }
