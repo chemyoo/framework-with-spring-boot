@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CommAspecter {
 
 	// Point cut of aspecter.
-	@Pointcut("execution( * com.southgis.gzfreehold.maintain.controller.*.*(..))  && "
+	@Pointcut("execution( * pers.chemyoo.core.controller.*.*(..))  && "
 			+ "(@annotation(org.springframework.web.bind.annotation.RequestMapping))")
 
 	public void excudeService() {
@@ -22,9 +22,9 @@ public class CommAspecter {
 	}
 	
 	// Point cut of aspecter.
-	@Pointcut("execution( * com.southgis.gzfreehold.maintain.mapper.*.insert*(..)) || "
-			+ "execution( * com.southgis.gzfreehold.maintain.mapper.*.update*(..)) || "
-			+ "execution( * com.southgis.gzfreehold.maintain.mapper.*.save*(..))")
+	@Pointcut("execution( * pers.chemyoo.core.mapper.*.insert*(..)) || "
+			+ "execution( * pers.chemyoo.core.mapper.*.update*(..)) || "
+			+ "execution( * pers.chemyoo.core.mapper.*.save*(..))")
 
 	public void includeService() {
 		// Empty.
