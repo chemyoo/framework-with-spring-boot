@@ -28,6 +28,12 @@
 		</dependency>
 		<!-- End:对象序列化依赖 -->
 		
+		<dependency>
+			<groupId>com.bw.attachment</groupId>
+			<artifactId>bw-attachment</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		
 	</dependencies>
 
 	<packaging>war</packaging>

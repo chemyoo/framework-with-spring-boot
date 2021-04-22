@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pers.chemyoo.core.utils.DateUtils.TimeFormat;
+
 /** 
  * @author Author : jianqing.liu
  * @version version : created time：2018年10月17日 下午12:02:25 
@@ -31,6 +33,7 @@ public class EnumUtils {
 				array.add(fieldToMap(fields, t));
 			}
 		}
+		TimeFormat a;
 		return array;
 	}
 	

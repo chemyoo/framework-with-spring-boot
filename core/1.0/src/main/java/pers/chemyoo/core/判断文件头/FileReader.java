@@ -12,8 +12,6 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 
-import com.bw.jssbd.util.CommonFuctionsUtils;
-import com.bw.jssbd.util.LoggerUtils;
 
 /**
  * 支持动态加载
@@ -90,7 +88,6 @@ public final class FileReader
 				}
 				catch (IOException e)
 				{
-					LoggerUtils.error(CommonFuctionsUtils.class, e.getMessage(), e);
 					list.clear();
 				}
 				if (!list.isEmpty())
@@ -112,14 +109,14 @@ public final class FileReader
 
 	public static void main(String[] args) throws IOException
 	{
-		File file = new File("C:", "\\Users\\chemyoo\\Desktop\\湖南部署");
+		File file = new File("C:", "\\Users\\chemyoo\\Desktop\\山东输变电技经协同\\V1.0.0\\ceb");
 		for (File f : file.listFiles())
 		{
 			if (f.isFile())
 			{
 				FileInputStream fs = FileUtils.openInputStream(f);
 				FileObject fo = FileReader.getFileType(fs);
-				System.err.println(f.getName() + "----" + fo.getFileHeader());
+				System.err.println(fo.getFileHeader());
 			}
 		}
 	}

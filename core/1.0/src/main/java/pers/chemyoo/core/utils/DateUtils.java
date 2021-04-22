@@ -20,6 +20,52 @@ public class DateUtils {
 	public static final String MIDDLE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 	public static final String HOMI_TIME_FORMAT  = "HH:mm";
 	
+	public enum TimeFormat {
+		/**
+		 * pattern: yyyy
+		 */
+		EN_Y("yyyy"),
+		/**
+		 * pattern: yyyy-MM
+		 */
+		EN_Y_M("yyyy-MM"),
+		/**
+		 * pattern: yyyy-MM-dd
+		 */
+		EN_Y_M_D("yyyy-MM-dd"),
+		/**
+		 * pattern: yyyy-MM-dd HH:mm
+		 */
+		EN_Y_M_D_H_M("yyyy-MM-dd HH:mm"),
+		/**
+		 * pattern: yyyy-MM-dd HH:mm:ss
+		 */
+		EN_Y_M_D_H_M_S("yyyy-MM-dd HH:mm:ss"),
+		/**
+		 * pattern: yyyy年MM月
+		 */
+		CN_Y_M("yyyy年MM月"),
+		/**
+		 * pattern: yyyy年MM月dd日
+		 */
+		CN_Y_M_D("yyyy年MM月dd日"),
+		/**
+		 * pattern: yyyy年MM月dd日 HH时mm分
+		 */
+		CN_Y_M_D_H_M("yyyy年MM月dd日 HH时mm分"),
+		/**
+		 * pattern: yyyy年MM月dd日 HH时mm分ss秒
+		 */
+		CN_Y_M_D_H_M_S("yyyy年MM月dd日 HH时mm分ss秒");
+		TimeFormat(String pattern) {
+			this.pattern = pattern;
+		}
+		private String pattern;
+		public String getPattern() {
+			return this.pattern;
+		}
+	}
+	
 	public static final long MILLSECOND_OF_DAY = TimeUnit.DAYS.toMillis(1);
 	
 	// 时区时间偏移量
@@ -350,4 +396,19 @@ public class DateUtils {
 		return false;
 		
 	}
+	
+    /**
+     * 返回两个时间的相隔天数(向下取整)
+     *
+     * @param current 当前时间
+     * @param before  以前时间
+     * @return
+     */
+    public static long getDistanceOfTwoDate(Date current, Date before)
+    {
+        long currentTime = current.getTime();
+        long beforeTime = before.getTime();
+        return (currentTime - beforeTime) / (1000 * 60 * 60 * 24L);
+    }
+	
 }

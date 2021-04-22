@@ -12,13 +12,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.Validate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import pers.chemyoo.core.annotations.CheckField;
-import pers.chemyoo.core.entity.HnzljdSysSyncBak;
+import pers.chemyoo.core.enums.CheckGroups;
 import pers.chemyoo.core.enums.CheckType;
 
 /**
@@ -164,12 +165,17 @@ public class CheckUtils
 		}
 	}
 	
-	public static <T> CheckResults check(T t) {
+	public static <T> CheckResults check(T t, CheckGroups... groups) {
 		CheckResults result = new CheckResults();
 		List<Field> fields = getFieldsWithAnnotation(t.getClass(), CheckField.class);
 		if(!fields.isEmpty()) {
 			for(Field field : fields) {
 				CheckField checkField = field.getAnnotation(CheckField.class);
+				CheckGroups[] checkGroups = checkField.groups();
+				if(!hasValue(checkGroups, CheckGroups.NONE) && !hasValue(checkGroups, groups)) 
+				{
+					continue;
+				}
 				doCheckType(t, result, checkField, field);
 			}
 		}
@@ -203,6 +209,15 @@ public class CheckUtils
 		}
 	}
 	
+	private static boolean hasValue(CheckGroups[] checkGroups, CheckGroups... groups) {
+		for(CheckGroups g : groups) {
+			if(ArrayUtils.contains(checkGroups, g)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	private static boolean isMatches(CheckType chektype, Object value) {
 		String regexp = chektype.getRegexp();
 		if(!CheckResults.isBlank(regexp)) {
@@ -225,12 +240,4 @@ public class CheckUtils
 		return array;
 	}
 
-	public static void main(String[] args)
-	{
-		System.out.println(enumToList(CheckType.class));
-		HnzljdSysSyncBak v = new HnzljdSysSyncBak();
-		v.setId("123456");
-		v.setBakTimes(10);
-		System.out.println(CheckUtils.check(v));
-	}
 }

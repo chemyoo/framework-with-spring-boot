@@ -6,6 +6,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import pers.chemyoo.core.enums.CheckGroups;
 import pers.chemyoo.core.enums.CheckType;
 
 /** 
@@ -42,5 +43,11 @@ public @interface CheckField
 	 * @return
 	 */
 	CheckType type() default CheckType.NONE;
+	
+	/**
+	 * 校验分组
+	 * @return
+	 */
+	CheckGroups[] groups() default CheckGroups.NONE;
 	
 }
