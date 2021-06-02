@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -13,12 +14,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 import pers.chemyoo.core.annotations.CheckField;
+import pers.chemyoo.core.entity.IdModel;
 import pers.chemyoo.core.enums.CheckGroups;
 import pers.chemyoo.core.enums.CheckType;
 
@@ -38,9 +41,9 @@ public class CheckUtils
 	}
 
 	private static final String GET = "get";
-	
+
 //	private static List<CheckType> checkTypes = enumToList(CheckType.class);
-	
+
 	private static final String LENGTH_MESSAGE = "%s最大允许长度为%d，当前超出%d个字符";
 
 	/**
@@ -51,8 +54,16 @@ public class CheckUtils
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> T getValue(Object obj, String fieldName)
+	public static <T> T getValue(Object obj, String fieldName, List<Object> parameters, Class<?>... parameterTypes)
 	{
+		if (parameters == null)
+		{
+			parameters = new ArrayList<>();
+		}
+		if (parameters.size() != parameterTypes.length)
+		{
+			throw new IllegalArgumentException("parameters`s number not equal parameterTypes`s number.");
+		}
 		T value = null;
 		if (obj != null)
 		{
@@ -65,21 +76,16 @@ public class CheckUtils
 					Method method = clazz.getMethod(GET, Object.class);
 					return (T) method.invoke(obj, fieldName);
 				}
-				Field field = getFieldMap(clazz).get(fieldName.toLowerCase());
-				if (field == null)
+				Method method = getMethod(clazz, "get" + CamelCaseUtils.firstUpperCase(fieldName), parameterTypes);
+				if (method == null)
 				{
-					return value;
+					method = getMethod(clazz, fieldName, parameterTypes);
+					if (method == null)
+					{
+						return value;
+					}
 				}
-				boolean accessible = field.isAccessible();
-				if (!accessible)
-				{
-					field.setAccessible(!accessible);
-				}
-				value = (T) field.get(obj);
-				if (!accessible)
-				{
-					field.setAccessible(accessible);
-				}
+				value = (T) method.invoke(obj, parameters.toArray());
 			}
 			catch (IllegalAccessException | SecurityException | NoSuchMethodException | InvocationTargetException e)
 			{
@@ -87,6 +93,27 @@ public class CheckUtils
 			}
 		}
 		return value;
+	}
+
+	public static <T> T getValue(Object obj, String fieldName)
+	{
+		return getValue(obj, fieldName, null);
+	}
+
+	private static Method getMethod(Class<?> clazz, String fieldName, Class<?>... parameterTypes)
+	{
+		if (StringUtils.isNotBlank(fieldName))
+		{
+			try
+			{
+				return clazz.getMethod(fieldName, parameterTypes);
+			}
+			catch (SecurityException | NoSuchMethodException e)
+			{
+				// ignore
+			}
+		}
+		return null;
 	}
 
 	public static void copyValues(Object dest, Object orig) throws IllegalAccessException
@@ -119,6 +146,17 @@ public class CheckUtils
 			clazz = clazz.getSuperclass();
 		} while (clazz != null && clazz != Object.class);
 		return fields;
+	}
+
+	public static void main(String[] args)
+	{
+		IdModel model = new IdModel();
+		model.setId("31321");
+		model.setLastModTime(DateUtils.getCurrentTime());
+		model.setOk(true);
+		List<Object> list = new ArrayList<>();
+		list.add(null);
+		System.err.println(getValue(model, "GG", Arrays.asList(null, "1"), String.class, String.class) + "");
 	}
 
 	public static Map<String, Field> getFieldMap(Class<?> clazz)
@@ -164,15 +202,18 @@ public class CheckUtils
 			}
 		}
 	}
-	
-	public static <T> CheckResults check(T t, CheckGroups... groups) {
+
+	public static <T> CheckResults check(T t, CheckGroups... groups)
+	{
 		CheckResults result = new CheckResults();
 		List<Field> fields = getFieldsWithAnnotation(t.getClass(), CheckField.class);
-		if(!fields.isEmpty()) {
-			for(Field field : fields) {
+		if (!fields.isEmpty())
+		{
+			for (Field field : fields)
+			{
 				CheckField checkField = field.getAnnotation(CheckField.class);
 				CheckGroups[] checkGroups = checkField.groups();
-				if(!hasValue(checkGroups, CheckGroups.NONE) && !hasValue(checkGroups, groups)) 
+				if (!hasValue(checkGroups, CheckGroups.NONE) && !hasValue(checkGroups, groups))
 				{
 					continue;
 				}
@@ -181,60 +222,80 @@ public class CheckUtils
 		}
 		return result;
 	}
-	
-	private static <T> void doCheckType(T t, CheckResults result, CheckField checkField, Field field) {
+
+	private static <T> void doCheckType(T t, CheckResults result, CheckField checkField, Field field)
+	{
 		CheckType chektype = checkField.type();
 		Object value = getValue(t, field.getName());
 		int length = checkField.length();
-		if(CheckType.NONE != chektype && field.getType() == String.class) {
+		if (CheckType.NONE != chektype && field.getType() == String.class)
+		{
 			boolean error = false;
-			if(CheckType.NOT_EMPTY == chektype) {
+			if (CheckType.NOT_EMPTY == chektype)
+			{
 				error = value != null && ((String) value).length() != 0;
-			}else if(CheckType.NOT_BLANK == chektype) {
+			}
+			else if (CheckType.NOT_BLANK == chektype)
+			{
 				error = value != null && ((String) value).trim().length() != 0;
-			} else if(CheckType.NOT_NULL == chektype) {
+			}
+			else if (CheckType.NOT_NULL == chektype)
+			{
 				error = value != null;
-			} else {
+			}
+			else
+			{
 				error = isMatches(chektype, value);
 			}
-			if(!error) {
+			if (!error)
+			{
 				result.addMessages(checkField.value() + checkField.message());
 			}
-		} 
-		if(value != null && length > 0) {
+		}
+		if (value != null && length > 0)
+		{
 			int diff = value.toString().length() - length;
-			if(diff > 0) {
+			if (diff > 0)
+			{
 				result.addMessages(String.format(LENGTH_MESSAGE, checkField.value(), length, diff));
 			}
 		}
 	}
-	
-	private static boolean hasValue(CheckGroups[] checkGroups, CheckGroups... groups) {
-		for(CheckGroups g : groups) {
-			if(ArrayUtils.contains(checkGroups, g)) {
+
+	private static boolean hasValue(CheckGroups[] checkGroups, CheckGroups... groups)
+	{
+		for (CheckGroups g : groups)
+		{
+			if (ArrayUtils.contains(checkGroups, g))
+			{
 				return true;
 			}
 		}
 		return false;
 	}
-	
-	private static boolean isMatches(CheckType chektype, Object value) {
+
+	private static boolean isMatches(CheckType chektype, Object value)
+	{
 		String regexp = chektype.getRegexp();
-		if(!CheckResults.isBlank(regexp)) {
+		if (!CheckResults.isBlank(regexp))
+		{
 			return value != null || !Pattern.matches(chektype.getRegexp(), (String) value);
 		}
 		return true;
 	}
-	
+
 	/**
 	 * 枚举类转换成List<CheckType>
+	 * 
 	 * @param clazz
 	 * @return
 	 */
-	public static <T extends Enum<?>> List<CheckType> enumToList(Class<T> clazz) {
+	public static <T extends Enum<?>> List<CheckType> enumToList(Class<T> clazz)
+	{
 		List<CheckType> array = new ArrayList<>();
 		CheckType[] clazzs = (CheckType[]) clazz.getEnumConstants();
-		for(CheckType t : clazzs) {
+		for (CheckType t : clazzs)
+		{
 			array.add(t);
 		}
 		return array;
