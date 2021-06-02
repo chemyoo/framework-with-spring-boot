@@ -16,7 +16,8 @@ import pers.chemyoo.core.enums.ExcludeField;
  * @description class description
  */
 @Data
-public class IdModel {
+public class IdModel
+{
 
 	@Sid
 	@Comment("流水号")
@@ -25,5 +26,12 @@ public class IdModel {
 	@JsonIgnore
 	@Comment(value = "最后修改时间", exclude = { ExcludeField.ALWAYS })
 	private Date lastModTime;
+
+	private boolean isOk;
+
+	public String getGG(String ab, String b)
+	{
+		return isOk + ab + b;
+	}
 
 }
