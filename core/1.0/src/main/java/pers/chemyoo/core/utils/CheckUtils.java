@@ -49,6 +49,8 @@ public class CheckUtils
 	/**
 	 * 从对象中获取指定的属性值
 	 * 
+	 * use getter have arguments: getA(String a, Sring b)
+	 * 
 	 * @param obj
 	 * @param fieldName
 	 * @return
@@ -95,6 +97,14 @@ public class CheckUtils
 		return value;
 	}
 
+	/**
+	 * use no arguments getter: getA()
+	 * 
+	 * @param <T>
+	 * @param obj
+	 * @param fieldName
+	 * @return
+	 */
 	public static <T> T getValue(Object obj, String fieldName)
 	{
 		return getValue(obj, fieldName, null);
