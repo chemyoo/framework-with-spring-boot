@@ -3,6 +3,12 @@ package pers.chemyoo.core.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 按排列组合获取字符串
+ * 
+ * @author jianqing.liu
+ * @since 2021年6月29日 上午10:54:50
+ */
 public class RadixNumber
 {
 	private int length;
@@ -21,10 +27,6 @@ public class RadixNumber
 		}
 		this.length = length;
 		this.mark = new int[length];
-		for (int i = 0; i < length; i++)
-		{
-			mark[i] = 0;
-		}
 		if (radix < 2)
 		{
 			radix = 2;
@@ -111,7 +113,7 @@ public class RadixNumber
 	public RadixNumber getNextNumber()
 	{
 		int pos = this.length - 1;
-		while (pos > min)
+		while (pos >= min)
 		{
 			int temp = mark[pos];
 			if (temp >= radix)
@@ -124,6 +126,18 @@ public class RadixNumber
 				mark[pos] = ++mark[pos];
 				break;
 			}
+		}
+		boolean isAllFull = true;
+		for (int i = 0; i < mark.length; i++)
+		{
+			if (mark[i] != radix)
+			{
+				isAllFull = false;
+			}
+		}
+		if (isAllFull)
+		{
+			this.count++;
 		}
 		return this;
 	}
@@ -145,18 +159,6 @@ public class RadixNumber
 				break;
 			}
 		}
-		boolean isAllZero = true;
-		for (int i = 0; i < mark.length; i++)
-		{
-			if (mark[i] != 0)
-			{
-				isAllZero = false;
-			}
-		}
-		if (isAllZero)
-		{
-			this.count++;
-		}
 		return this;
 	}
 
@@ -173,10 +175,14 @@ public class RadixNumber
 
 	public static void main(String[] args)
 	{
-		RadixNumber num = new RadixNumber(3, 16);
+		RadixNumber num = new RadixNumber(8, 10);
 		System.err.println(num);
-		for (int i = 0; i < 100000; i++)
+		for (int i = 0; i < 20; i++)
 		{
+			if (num.isOverflow())
+			{
+				num = new RadixNumber(num.getLength() + 1, 10);
+			}
 			System.err.println(num.getNextNumber());
 		}
 	}
