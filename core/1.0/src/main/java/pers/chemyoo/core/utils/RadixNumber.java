@@ -1,7 +1,19 @@
 package pers.chemyoo.core.utils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * 按排列组合获取字符串
@@ -9,8 +21,13 @@ import java.util.List;
  * @author jianqing.liu
  * @since 2021年6月29日 上午10:54:50
  */
-public class RadixNumber
+public class RadixNumber implements Serializable
 {
+	/**
+	 * serialVersionUID
+	 */
+	private static final long serialVersionUID = 612543780622575305L;
+
 	private int length;
 
 	private int[] mark;
@@ -173,18 +190,61 @@ public class RadixNumber
 		return builder.toString();
 	}
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws IOException, ClassNotFoundException
 	{
-		RadixNumber num = new RadixNumber(8, 10);
-		System.err.println(num);
-		for (int i = 0; i < 20; i++)
+		RadixNumber num = getRecord();
+		int maxlength = 16;
+		record(num);
+		while (true)
 		{
+			if (num.getLength() > maxlength || "liujianqing".equals(num.toString()))
+			{
+				break;
+			}
+			System.err.println(num);
 			if (num.isOverflow())
 			{
-				num = new RadixNumber(num.getLength() + 1, 10);
+				num = new RadixNumber(num.getLength() + 1, 92);
+				continue;
 			}
-			System.err.println(num.getNextNumber());
+			num.getNextNumber();
 		}
+	}
+
+	private static void record(RadixNumber num)
+	{
+		Timer timer = new Timer();
+		timer.schedule(new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				try (OutputStream out = new FileOutputStream("D:/num.obj");
+
+						ObjectOutputStream outObj = new ObjectOutputStream(out))
+				{
+					outObj.writeObject(num);
+					System.err.println("存储值" + num.toString());
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}, TimeUnit.SECONDS.toMillis(5), TimeUnit.SECONDS.toMillis(10));
+	}
+
+	private static RadixNumber getRecord() throws IOException, ClassNotFoundException
+	{
+		File file = new File("D:/num.obj");
+		if (file.exists())
+		{
+			try (ObjectInputStream in = new ObjectInputStream(FileUtils.openInputStream(file)))
+			{
+				return (RadixNumber) in.readObject();
+			}
+		}
+		return new RadixNumber(8, 92);
 	}
 
 }
