@@ -109,7 +109,7 @@ public class RadixNumber implements Serializable
 		{
 			list.add(i);
 		}
-		for (char i = '?'; i <= '@'; i++)
+		for (char i = ':'; i <= '@'; i++)
 		{
 			list.add(i);
 		}
@@ -204,7 +204,7 @@ public class RadixNumber implements Serializable
 			System.err.println(num);
 			if (num.isOverflow())
 			{
-				num = new RadixNumber(num.getLength() + 1, 92);
+				num = new RadixNumber(num.getLength() + 1, 100);
 				continue;
 			}
 			num.getNextNumber();
